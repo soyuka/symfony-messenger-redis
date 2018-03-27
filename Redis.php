@@ -8,5 +8,7 @@ class Redis extends \Redis
         parent::__construct();
         $this->connect($url, $port);
         $this->setOption(\Redis::OPT_SERIALIZER, $serializer);
+        $this->setOption(\Redis::OPT_READ_TIMEOUT, -1);
+
     }
 }
