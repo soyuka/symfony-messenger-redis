@@ -39,10 +39,12 @@ final class FooHandler
 ```
 
 Tag it:
-```
-App\MessageHandler\FooHandler:
-		tags:
-				- { name: messenger.message_handler }
+
+```yaml
+services:
+  App\MessageHandler\FooHandler:
+      tags:
+          - { name: messenger.message_handler }
 ```
 
 You're done!

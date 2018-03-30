@@ -13,6 +13,13 @@
         "psr-4": { "Soyuka\\RedisMessengerAdapter\\": "src",  "Soyuka\\RedisMessengerAdapter\\Tests\\": "tests"  }
     },
     "minimum-stability": "dev",
+    "require": {
+      "php": ">=7.1.0",
+      "ext-redis": "*"
+    },
+    "suggest": {
+      "ext-igbinary": "*"
+    },
     "require-dev": {
       "phpunit/phpunit": "^7.1@dev",
       "symfony/messenger": "^4.0@dev",
