@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Messenger;
+namespace Soyuka\RedisMessengerAdapter;
 
 use Symfony\Component\Messenger\Transport\Serialization\EncoderInterface;
 use Symfony\Component\Messenger\Transport\SenderInterface;
@@ -18,6 +18,9 @@ class Sender implements SenderInterface
         $this->queue = $queue;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function send($message)
     {
         $this->redis->rpush($this->queue, $this->encoder->encode($message));

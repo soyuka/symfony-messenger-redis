@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Messenger;
+namespace Soyuka\RedisMessengerAdapter;
 
 use Symfony\Component\Messenger\Transport\Serialization\DecoderInterface;
 use Symfony\Component\Messenger\Transport\ReceiverInterface;
@@ -29,5 +29,4 @@ class Receiver implements ReceiverInterface
             yield $this->decoder->decode($value[1]);
         }
     }
-
 }

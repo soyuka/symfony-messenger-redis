@@ -2,38 +2,40 @@
 
 declare(strict_types=1);
 
-namespace App\Messenger\Compiler\DependencyInjection;
+namespace Soyuka\RedisMessengerAdapter\Bundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
-use App\Messenger\Redis;
-use App\Messenger\Receiver;
-use App\Messenger\Sender;
-use App\Messenger\Command\ListMessengerReceivers;
+use Soyuka\RedisMessengerAdapter\Redis;
+use Soyuka\RedisMessengerAdapter\Receiver;
+use Soyuka\RedisMessengerAdapter\Sender;
+use Soyuka\RedisMessengerAdapter\Command\ListMessengerReceivers;
 
 /**
- * Adds Message senders/receivers
+ * Adds Message senders/receivers.
  */
-final class MessagePass implements CompilerPassInterface
+final class RedisAdapterPass implements CompilerPassInterface
 {
+    const PREFIX = 'redis_messenger';
+
     /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        $queues = [];
-        $definitions = [];
+        $queues = array();
+        $definitions = array();
         $redis = new Reference(Redis::class);
 
         // extracted from registerMessengerConfiguration
-        $senderLocatorMapping = [];
-        $messageToSenderIdsMapping = [];
+        $senderLocatorMapping = array();
+        $messageToSenderIdsMapping = array();
 
-        foreach ($container->getParameter('app.messenger.messages') as $class => $message) {
-            if (!in_array($message['queue'], $queues, true)) {
-                $queues[] = $message['queue'];
+        foreach ($container->getParameter(self::PREFIX.'.messages') as $class => $message) {
+            if (!isset($queues[$message['queue']])) {
+                $queues[$message['queue']] = true;
             }
 
             $senderDefinition = new Definition(Sender::class, array(
@@ -43,17 +45,17 @@ final class MessagePass implements CompilerPassInterface
             ));
             $senderDefinition->addTag('messenger.sender');
 
-            $sender = 'app_messenger.sender.'.$message['queue'];
+            $sender = self::PREFIX.'.sender.'.$message['queue'];
             $container->setDefinition($sender, $senderDefinition);
             $senderLocatorMapping[$sender] = new Reference($sender);
-            $messageToSenderIdsMapping[$class] = [$sender];
+            $messageToSenderIdsMapping[$class] = array($sender);
         }
 
         $container->getDefinition('messenger.sender_locator')->replaceArgument(0, $senderLocatorMapping);
         $container->getDefinition('messenger.asynchronous.routing.sender_locator')->replaceArgument(1, $messageToSenderIdsMapping);
 
-        $receivers = [];
-        foreach ($queues as $queue) {
+        $receivers = array();
+        foreach ($queues as $queue => $noop) {
             $receiverDefinition = new Definition(Receiver::class, array(
                 new Reference('messenger.transport.default_decoder'),
                 $redis,
@@ -61,7 +63,7 @@ final class MessagePass implements CompilerPassInterface
             ));
             $receiverDefinition->addTag('messenger.receiver');
 
-            $receiver = 'app_messenger.receiver.'.$queue;
+            $receiver = self::PREFIX.'.receiver.'.$queue;
             $container->setDefinition($receiver, $receiverDefinition);
             $receivers[] = $receiver;
         }

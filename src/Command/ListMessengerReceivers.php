@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Messenger\Command;
+namespace Soyuka\RedisMessengerAdapter\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 
-class ListMessengerReceivers extends Command
+final class ListMessengerReceivers extends Command
 {
     private $receiversIds;
 
@@ -19,6 +18,9 @@ class ListMessengerReceivers extends Command
         $this->receiversIds = $receiversIds;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this->setName('app:messenger:list_receivers')
