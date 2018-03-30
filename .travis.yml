@@ -14,7 +14,7 @@ before_install:
   - phpenv config-rm xdebug.ini || echo "xdebug not available"
   - composer global require --dev 'friendsofphp/php-cs-fixer:^2.11'
   - export PATH="$PATH:$HOME/.composer/vendor/bin"
-  - pecl install redis
+  - pecl install -f -o redis igbinary
 
 install:
   - composer update --no-progress --no-suggest --ansi
