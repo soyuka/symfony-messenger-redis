@@ -1,21 +1,60 @@
 Redis adapter for symfony/messenger
 ===========================
 
-Requirements:
+This is an experimental Receiver/Sender on Redis for the symfony/messenger component.
 
-- symfony/messenger (experimental)
-- Redis
-- IgBinary to use Redis::SERIALIZER_IGBINARY
+## Quick start
 
-The sender:
+For now we're exposing a bundle which is pre-configuring the Messenger component with receivers and senders.
 
-        $this->redis->rpush($this->queue, $this->encoder->encode($message));
+```console
+composer require symfony/messenger soyuka/symfony-messenger-redis
+```
 
-The receiver (uses `blPop`, blocks the connection while waiting for new data):
+Also requires the redis extension.
 
-            $value = $this->redis->blPop($this->queue, 0);
+Add the following configuration:
 
-Configuration:
+```yaml
+redis_messenger:
+    messages:
+        'App\Message\Foo': 'foo_queue'
+```
+
+Add a message handler:
+
+```php
+<?php
+
+namespace App\MessageHandler;
+
+use App\Message\Foo;
+
+final class FooHandler
+{
+    public function __invoke(Foo $message)
+    {
+    }
+}
+```
+
+Tag it:
+```
+App\MessageHandler\FooHandler:
+		tags:
+				- { name: messenger.message_handler }
+```
+
+You're done!
+
+Launch `bin/console messenger:consume-messages redis_messenger.receiver.foo_queue` and dispatch messages from the bus:
+
+```php
+<?php
+$bus->dispatch(new Foo());
+```
+
+## Configuration reference
 
 ```yaml
 redis_messenger:
@@ -28,3 +67,15 @@ redis_messenger:
         'App\Message\Bar': 'bar_queue'
 ```
 
+## Internals
+
+The sender uses a List and uses `RPUSH` (append value to list).
+The receiver uses `BLPOP` which reads the first element of the list. If no elements are present it'll block the connection until a new element shows up.
+
+I started a RedisAdapter and may add it to symfony once messenger documentation and AMQP adapter are merged.
+
+- https://github.com/symfony/symfony/pull/26632 (AMQP adapter PR)
+- https://github.com/symfony/symfony-docs/pull/9437 (messenger documentation)
+- https://github.com/symfony/symfony/tree/master/src/Symfony/Component/Messenger (messenger component code)
+
+Although, for redis if we want to use only one queue we can't simply use RPUSH/BLPOP anymore. Indeed this works here because 1 sender works with 1 receiver. If we use 2 receiver on the same queue they may take messages that aren't theirs. Anyway, to guarantee proper message delivery I think it's best to use 1 queue per message. At least it's the reasoning behind this bundle and why I introduced a new configuration reference.
