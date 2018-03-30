@@ -1,6 +1,8 @@
 Redis adapter for symfony/messenger
 ===========================
 
+[![Build Status](https://travis-ci.org/soyuka/symfony-messenger-redis.svg?branch=master)](https://travis-ci.org/soyuka/symfony-messenger-redis)
+
 This is an experimental Receiver/Sender on Redis for the symfony/messenger component.
 
 ## Quick start
