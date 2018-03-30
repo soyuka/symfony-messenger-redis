@@ -11,6 +11,8 @@ For now we're exposing a bundle which is pre-configuring the Messenger component
 composer require symfony/messenger soyuka/symfony-messenger-redis
 ```
 
+Add the bundle `new Soyuka\RedisMessengerAdapter\Bundle\RedisMessengerAdapterBundle()`.
+
 Also requires the redis extension.
 
 Add the following configuration:
