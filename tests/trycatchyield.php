@@ -76,11 +76,11 @@ $receiver = new Receiver($messageSerializer, $sender);
 $container = new Container();
 $container->set('sender', $sender);
 
-$throwed = false;
+$WTFIsGoingOn = false;
 
-$handler = function ($t) use (&$throwed) {
-    if (false === $throwed) {
-        $throwed = true;
+$handler = function ($t) use (&$WTFIsGoingOn) {
+    if (false === $WTFIsGoingOn) {
+        $WTFIsGoingOn = true;
         throw new \Exception('Fail');
     }
 
