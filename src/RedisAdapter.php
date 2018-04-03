@@ -14,7 +14,7 @@ class RedisAdapter implements AdapterInterface
     private $decoder;
     private $connection;
 
-    public function __construct(EncoderInterface $encoder, DecoderInterface $decoder, Redis $connection, string $queue)
+    public function __construct(EncoderInterface $encoder, DecoderInterface $decoder, Connection $connection, string $queue)
     {
         $this->encoder = $encoder;
         $this->decoder = $decoder;

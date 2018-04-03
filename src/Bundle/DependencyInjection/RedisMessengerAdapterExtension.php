@@ -3,7 +3,7 @@
 namespace Soyuka\RedisMessengerAdapter\Bundle\DependencyInjection;
 
 use Soyuka\RedisMessengerAdapter\Command\ListMessengerReceivers;
-use Soyuka\RedisMessengerAdapter\Redis;
+use Soyuka\RedisMessengerAdapter\Connection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -23,7 +23,7 @@ class RedisMessengerAdapterExtension extends Extension
 
         $container->setParameter('redis_messenger.messages', $config['messages']);
 
-        $redisDefinition = new Definition(Redis::class, array(
+        $connectionDefinition = new Definition(Connection::class, array(
             $config['redis']['url'],
             $config['redis']['port'],
             $config['redis']['serializer'],
@@ -33,7 +33,7 @@ class RedisMessengerAdapterExtension extends Extension
         $commandDefinition->addTag('console.command');
 
         $container->setDefinitions(array(
-            Redis::class => $redisDefinition,
+            Connection::class => $connectionDefinition,
             ListMessengerReceivers::class => $commandDefinition,
         ));
     }

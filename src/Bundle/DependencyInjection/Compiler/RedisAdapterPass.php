@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
-use Soyuka\RedisMessengerAdapter\Redis;
+use Soyuka\RedisMessengerAdapter\Connection;
 use Soyuka\RedisMessengerAdapter\Receiver;
 use Soyuka\RedisMessengerAdapter\Sender;
 use Soyuka\RedisMessengerAdapter\Command\ListMessengerReceivers;
@@ -27,7 +27,7 @@ final class RedisAdapterPass implements CompilerPassInterface
     {
         $queues = array();
         $definitions = array();
-        $redis = new Reference(Redis::class);
+        $redis = new Reference(Connection::class);
 
         // extracted from registerMessengerConfiguration
         $senderLocatorMapping = array();

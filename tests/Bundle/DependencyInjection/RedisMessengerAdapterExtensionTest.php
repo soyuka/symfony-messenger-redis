@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\DependencyInjection\Extension\ConfigurationExtensionInterface;
 use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Soyuka\RedisMessengerAdapter\Redis;
+use Soyuka\RedisMessengerAdapter\Connection;
 use Soyuka\RedisMessengerAdapter\Command\ListMessengerReceivers;
 
 class RedisMessengerAdapterExtensionTest extends TestCase
@@ -34,7 +34,7 @@ class RedisMessengerAdapterExtensionTest extends TestCase
         $containerBuilderProphecy->setParameter('redis_messenger.messages', array(Message::class => array('queue' => 'queue')))->shouldBeCalled();
         $self = $this;
         $containerBuilderProphecy->setDefinitions(Argument::type('array'))->will(function ($args) use ($self) {
-            $self->assertEquals(array_keys($args[0]), array(Redis::class, ListMessengerReceivers::class));
+            $self->assertEquals(array_keys($args[0]), array(Connection::class, ListMessengerReceivers::class));
         })->shouldBeCalled();
 
         $this->extension->load($config, $containerBuilderProphecy->reveal());

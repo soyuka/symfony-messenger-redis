@@ -8,13 +8,13 @@ use Symfony\Component\Messenger\Transport\SenderInterface;
 class Sender implements SenderInterface
 {
     private $encoder;
-    private $redis;
+    private $connection;
     private $queue;
 
-    public function __construct(EncoderInterface $encoder, Redis $redis, string $queue)
+    public function __construct(EncoderInterface $encoder, Connection $connection, string $queue)
     {
         $this->encoder = $encoder;
-        $this->redis = $redis;
+        $this->connection = $connection;
         $this->queue = $queue;
     }
 
@@ -23,6 +23,6 @@ class Sender implements SenderInterface
      */
     public function send($message)
     {
-        $this->redis->rpush($this->queue, $this->encoder->encode($message));
+        $this->connection->add($this->queue, $this->encoder->encode($message));
     }
 }

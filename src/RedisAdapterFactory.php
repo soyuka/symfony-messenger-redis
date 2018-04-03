@@ -20,7 +20,7 @@ class RedisAdapterFactory implements AdapterFactoryInterface
 
     public function create(string $dsn): AdapterInterface
     {
-        return new RedisAdapter($this->encoder, $this->decoder, Redis::fromDsn($dsn), $this->queue);
+        return new RedisAdapter($this->encoder, $this->decoder, Connection::fromDsn($dsn), $this->queue);
     }
 
     public function supports(string $dsn): bool
