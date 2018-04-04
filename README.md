@@ -20,7 +20,7 @@ Also requires the redis extension.
 Add the following configuration:
 
 ```yaml
-redis_messenger:
+redis_messenger_adapter:
     messages:
         'App\Message\Foo': 'foo_queue'
 ```
@@ -63,7 +63,7 @@ $bus->dispatch(new Foo());
 ## Configuration reference
 
 ```yaml
-redis_messenger:
+redis_messenger_adapter:
     redis:
         url: '127.0.0.1'
         port: 6379
