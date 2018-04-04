@@ -30,6 +30,7 @@ class RedisMessengerAdapterExtension extends Extension
         ));
 
         $commandDefinition = new Definition(ListMessengerReceivers::class);
+        $commandDefinition->setArgument(0, []);
         $commandDefinition->addTag('console.command');
 
         $container->setDefinitions(array(
