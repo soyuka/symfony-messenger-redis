@@ -28,7 +28,7 @@ class RedisAdapterPassTest extends TestCase
         $commandProphecy->replaceArgument(0, Argument::type('array'))->shouldBeCalled();
 
         $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
-        $containerBuilderProphecy->getParameter('redis_messenger.messages')->shouldBeCalled()->willReturn(array(Message::class => array('queue' => 'test')));
+        $containerBuilderProphecy->getParameter('redis_messenger.messages')->shouldBeCalled()->willReturn(array(Message::class => array('queue' => 'test', 'ttl' => 1000, 'blockingTimeout' => 1000)));
         $containerBuilderProphecy->setDefinition('redis_messenger.sender.test', Argument::type(Definition::class))->shouldBeCalled();
 
         $containerBuilderProphecy->getDefinition('messenger.sender_locator')->shouldBeCalled()->willReturn($senderLocatorProphecy->reveal());

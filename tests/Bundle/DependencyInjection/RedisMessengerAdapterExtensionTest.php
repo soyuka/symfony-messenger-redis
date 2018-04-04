@@ -31,7 +31,7 @@ class RedisMessengerAdapterExtensionTest extends TestCase
         $config = array('redis_messenger' => array('messages' => array(Message::class => 'queue')));
 
         $containerBuilderProphecy = $this->prophesize(ContainerBuilder::class);
-        $containerBuilderProphecy->setParameter('redis_messenger.messages', array(Message::class => array('queue' => 'queue')))->shouldBeCalled();
+        $containerBuilderProphecy->setParameter('redis_messenger.messages', array(Message::class => array('queue' => 'queue', 'ttl' => 10000, 'blockingTimeout' => 1000)))->shouldBeCalled();
         $self = $this;
         $containerBuilderProphecy->setDefinitions(Argument::type('array'))->will(function ($args) use ($self) {
             $self->assertEquals(array_keys($args[0]), array(Connection::class, ListMessengerReceivers::class));

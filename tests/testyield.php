@@ -1,15 +1,17 @@
 <?php
 
-function heavyWork ($task) {
-    if ($task === 3) {
+function heavyWork($task)
+{
+    if (3 === $task) {
         throw new \Exception('test');
     }
 
     return $task;
 }
 
-function truc() {
-    $arr = [1,2,3,4,5];
+function truc()
+{
+    $arr = array(1, 2, 3, 4, 5);
 
     foreach ($arr as $a) {
         try {

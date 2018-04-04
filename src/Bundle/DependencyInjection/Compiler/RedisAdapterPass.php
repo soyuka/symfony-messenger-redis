@@ -25,7 +25,6 @@ final class RedisAdapterPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $queues = array();
         $definitions = array();
         $redis = new Reference(Connection::class);
 
@@ -33,11 +32,9 @@ final class RedisAdapterPass implements CompilerPassInterface
         $senderLocatorMapping = array();
         $messageToSenderIdsMapping = array();
 
-        foreach ($container->getParameter(self::PREFIX.'.messages') as $class => $message) {
-            if (!isset($queues[$message['queue']])) {
-                $queues[$message['queue']] = true;
-            }
+        $messages = $container->getParameter(self::PREFIX.'.messages');
 
+        foreach ($messages as $class => $message) {
             $senderDefinition = new Definition(Sender::class, array(
                 new Reference('messenger.transport.default_encoder'),
                 $redis,
@@ -55,15 +52,17 @@ final class RedisAdapterPass implements CompilerPassInterface
         $container->getDefinition('messenger.asynchronous.routing.sender_locator')->replaceArgument(1, $messageToSenderIdsMapping);
 
         $receivers = array();
-        foreach ($queues as $queue => $noop) {
+        foreach ($messages as $message) {
             $receiverDefinition = new Definition(Receiver::class, array(
                 new Reference('messenger.transport.default_decoder'),
                 $redis,
-                $queue,
+                $message['queue'],
+                $message['ttl'],
+                $message['blockingTimeout'],
             ));
             $receiverDefinition->addTag('messenger.receiver');
 
-            $receiver = self::PREFIX.'.receiver.'.$queue;
+            $receiver = self::PREFIX.'.receiver.'.$message['queue'];
             $container->setDefinition($receiver, $receiverDefinition);
             $receivers[] = $receiver;
         }

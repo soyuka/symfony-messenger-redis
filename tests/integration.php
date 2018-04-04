@@ -46,38 +46,21 @@ $container->set($senderId, $sender);
 
 $handler = function ($t) use ($data, $failure, &$numFailure, &$numAck) {
     if ($t->foo === $failure) {
-        if ($numFailure === 0) {
-            $numFailure++;
+        if (0 === $numFailure) {
+            ++$numFailure;
             throw new RejectMessageException('Fail');
         } else {
-            $numAck++;
+            ++$numAck;
         }
-    } else if ($t->foo === $data) {
-        $numAck++;
+    } elseif ($t->foo === $data) {
+        ++$numAck;
     }
 
     echo sprintf('Got message "%s". Num ACK %s, num failures %s', $t->foo, $numAck, $numFailure).PHP_EOL;
 
-    // if ($t->foo === $failure) {
-    //     if ($numFailure <= 0) {
-    //         $numFailure++;
-    //         echo sprintf('Rejecting').PHP_EOL;
-    //         throw new RejectMessageException('Fail');
-    //     }
-    //
-    //     $numAck++;
-    //     echo sprintf('Got data message: "%s"', $t->foo).PHP_EOL;
-    //
-    // } else if ($t->foo === $data) {
-    //     echo sprintf('Got data message: "%s", sleep 1 second before ack.', $t->foo).PHP_EOL;
-    //     sleep(1);
-    //     $numAck++;
-    // }
-    //
-    // if ($numAck === 2) {
-    //     echo sprintf('Ack %s messages, got %s failure, exiting', $numAck, $numFailure).PHP_EOL;
-    //     exit(0);
-    // }
+    if (2 === $numAck && 1 === $numFailure) {
+        exit(0);
+    }
 };
 
 $bus = new MessageBus(array(

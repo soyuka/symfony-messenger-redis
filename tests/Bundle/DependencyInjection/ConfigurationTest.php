@@ -30,7 +30,7 @@ class ConfigurationTest extends TestCase
 
         $this->assertEquals(array(
             'enabled' => true,
-            'messages' => array(Message::class => array('queue' => 'queue')),
+            'messages' => array(Message::class => array('queue' => 'queue', 'ttl' => 10000, 'blockingTimeout' => 1000)),
             'redis' => array('url' => '127.0.0.1', 'port' => 6379, 'serializer' => \Redis::SERIALIZER_PHP),
         ), $config);
     }

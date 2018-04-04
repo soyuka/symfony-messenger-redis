@@ -33,13 +33,13 @@ class Receiver implements ReceiverInterface
             }
 
             try {
-                echo sprintf('before yield %s', $message['body']).PHP_EOL;
                 yield $this->decoder->decode($message);
-                echo sprintf('ack %s', $message['body']).PHP_EOL;
                 $this->connection->ack($this->queue, $message);
             } catch (RejectMessageException $e) {
+                yield
                 $this->connection->reject($this->queue, $message);
             } catch (\Throwable $e) {
+                yield
                 $this->connection->reject($this->queue, $message);
             }
         }

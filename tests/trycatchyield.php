@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Weird bug:.
+ *
+ * @sroze reproduced: https://gist.github.com/sroze/2ed22483b5fd35081b4fa31f02fd1a24
+ * It's not a bug: https://bugs.php.net/bug.php?id=76181
+ * Fix: https://3v4l.org/nWpTG (use `yield` in the catch)
+ */
 require __DIR__.'/../vendor/autoload.php';
 
 use Symfony\Component\Messenger\MessageBus;
@@ -25,31 +31,39 @@ $serializer = new Serializer($normalizers, $encoders);
 // Messenger encoder/decoder
 $messageSerializer = new MessageSerializer($serializer);
 
-class Message {
+class Message
+{
     public $str;
-    public function __construct($str) {
+
+    public function __construct($str)
+    {
         $this->str = $str;
     }
 }
 
-class Sender implements SenderInterface {
+class Sender implements SenderInterface
+{
     private $encoder;
-    public $list = [];
+    public $list = array();
 
-    public function __construct(EncoderInterface $encoder) {
+    public function __construct(EncoderInterface $encoder)
+    {
         $this->encoder = $encoder;
     }
 
-    public function send($message) {
+    public function send($message)
+    {
         $this->list[] = $this->encoder->encode($message);
     }
 }
 
-class Receiver implements ReceiverInterface {
+class Receiver implements ReceiverInterface
+{
     private $decoder;
     private $sender;
 
-    public function __construct(DecoderInterface $decoder, SenderInterface $sender) {
+    public function __construct(DecoderInterface $decoder, SenderInterface $sender)
+    {
         $this->decoder = $decoder;
         $this->sender = $sender;
     }
