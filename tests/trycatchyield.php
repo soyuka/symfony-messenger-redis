@@ -90,11 +90,11 @@ $receiver = new Receiver($messageSerializer, $sender);
 $container = new Container();
 $container->set('sender', $sender);
 
-$WTFIsGoingOn = false;
+$throwed = false;
 
-$handler = function ($t) use (&$WTFIsGoingOn) {
-    if (false === $WTFIsGoingOn) {
-        $WTFIsGoingOn = true;
+$handler = function ($t) use (&$throwed) {
+    if (false === $throwed) {
+        $throwed = true;
         throw new \Exception('Fail');
     }
 
@@ -116,3 +116,12 @@ $bus->dispatch(new Message('test3'));
 
 $worker = new Worker($receiver, $bus);
 $worker->run();
+
+// Expected output:
+// Got exception do nothing
+// Got message test2
+// Got message test3
+
+// Actual output:
+// Got exception do nothing
+// Got message test3
