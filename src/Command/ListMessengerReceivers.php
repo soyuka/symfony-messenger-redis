@@ -12,7 +12,7 @@ final class ListMessengerReceivers extends Command
 {
     private $receiversIds;
 
-    public function __construct($receiversIds)
+    public function __construct($receiversIds = array())
     {
         parent::__construct();
         $this->receiversIds = $receiversIds;
