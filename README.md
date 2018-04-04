@@ -70,18 +70,23 @@ redis_messenger:
         serializer: !php/const \Redis::SERIALIZER_IGBINARY # default is \Redis::SERIALIZER_PHP
     messages:
         'App\Message\Foo': 'foo_queue'
-        'App\Message\Bar': 'bar_queue'
+        'App\Message\Bar':
+            queue: 'bar_queue'
+            ttl: 10000
+            blockingTimeout: 1000
 ```
 
 ## Internals
 
-The sender uses a List and uses `RPUSH` (append value to list).
-The receiver uses `BLPOP` which reads the first element of the list. If no elements are present it'll block the connection until a new element shows up.
+Relevant discussion: https://twitter.com/jderusse/status/980768426116485122
+
+The sender uses a List and uses `RPUSH` (add value to the tail of the list).
+The receiver uses `BRPOPLPUSH` which reads the last element of the list and adds in to the head of another list (`queue_processing`). If no elements are present it'll block the connection until a new element shows up or the timeout is reached. When timeout is reached it works like a "ping" of some sort (todo wait for 26632 to be merged and `$handle(null)`).
+On every iteration, we will check the `queue_processing` list. For every items in this queue we have a corresponding `key` in redis with a given `ttl`. If the `key` has expired, the item is `LREM` (removed) from `queue_processing` and put back in the origin queue to be processed again.
+This workaround helps avoiding lost messages.
 
 I started a RedisAdapter and may add it to symfony once messenger documentation and AMQP adapter are merged.
 
 - https://github.com/symfony/symfony/pull/26632 (AMQP adapter PR)
 - https://github.com/symfony/symfony-docs/pull/9437 (messenger documentation)
 - https://github.com/symfony/symfony/tree/master/src/Symfony/Component/Messenger (messenger component code)
-
-Although, for redis if we want to use only one queue we can't simply use RPUSH/BLPOP anymore. Indeed this works here because 1 sender works with 1 receiver. If we use 2 receiver on the same queue they may take messages that aren't theirs. Anyway, to guarantee proper message delivery I think it's best to use 1 queue per message. At least it's the reasoning behind this bundle and why I introduced a new configuration reference.
