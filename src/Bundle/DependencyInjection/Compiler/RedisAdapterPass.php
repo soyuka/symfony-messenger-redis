@@ -71,6 +71,6 @@ final class RedisAdapterPass implements CompilerPassInterface
             $receivers[] = $receiver;
         }
 
-        $container->getDefinition(ListMessengerReceivers::class)->replaceArgument(0, $receivers);
+        $container->getDefinition(ListMessengerReceivers::class)->setArgument(0, $receivers);
     }
 }
