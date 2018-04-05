@@ -23,7 +23,7 @@ final class ListMessengerReceivers extends Command
      */
     protected function configure()
     {
-        $this->setName('app:messenger:list_receivers')
+        $this->setName('redis_messenger:list_receivers')
             ->setDescription('List available receivers.');
     }
 
