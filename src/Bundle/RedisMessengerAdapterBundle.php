@@ -5,6 +5,7 @@ namespace Soyuka\RedisMessengerAdapter\Bundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Soyuka\RedisMessengerAdapter\Bundle\DependencyInjection\Compiler\RedisAdapterPass;
 
 class RedisMessengerAdapterBundle extends Bundle
 {
@@ -12,8 +13,6 @@ class RedisMessengerAdapterBundle extends Bundle
     {
         parent::build($container);
 
-        if ($container->hasParameter('redis_messenger.messages')) {
-            $container->addCompilerPass(new RedisAdapterPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1);
-        }
+        $container->addCompilerPass(new RedisAdapterPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1);
     }
 }

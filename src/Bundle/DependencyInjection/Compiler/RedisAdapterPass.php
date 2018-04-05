@@ -34,6 +34,10 @@ final class RedisAdapterPass implements CompilerPassInterface
 
         $messages = $container->getParameter(self::PREFIX.'.messages');
 
+        if (!$messages) {
+            return;
+        }
+
         foreach ($messages as $class => $message) {
             $senderDefinition = new Definition(Sender::class, array(
                 new Reference('messenger.transport.default_encoder'),
