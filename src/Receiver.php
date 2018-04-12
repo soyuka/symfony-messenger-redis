@@ -12,6 +12,7 @@ class Receiver implements ReceiverInterface
     private $connection;
     private $processingTtl;
     private $blockingTimeout;
+    private $shouldStop = false;
 
     public function __construct(DecoderInterface $decoder, Connection $connection, string $queue, int $processingTtl = 10000, int $blockingTimeout = 1000)
     {
@@ -25,23 +26,35 @@ class Receiver implements ReceiverInterface
     /**
      * {@inheritdoc}
      */
-    public function receive(): iterable
+    public function receive(callable $handler): void
     {
-        while (true) {
+        while (!$this->shouldStop) {
             if (null === $message = $this->connection->waitAndGet($this->queue, $this->processingTtl, $this->blockingTimeout)) {
+                $handler(null);
+                if (function_exists('pcntl_signal_dispatch')) {
+                    pcntl_signal_dispatch();
+                }
+
                 continue;
             }
 
             try {
-                yield $this->decoder->decode($message);
+                $handler($this->decoder->decode($message));
                 $this->connection->ack($this->queue, $message);
             } catch (RejectMessageException $e) {
-                yield
                 $this->connection->reject($this->queue, $message);
             } catch (\Throwable $e) {
-                yield
                 $this->connection->reject($this->queue, $message);
+            } finally {
+                if (function_exists('pcntl_signal_dispatch')) {
+                    pcntl_signal_dispatch();
+                }
             }
         }
+    }
+
+    public function stop(): void
+    {
+        $this->shouldStop = true;
     }
 }
