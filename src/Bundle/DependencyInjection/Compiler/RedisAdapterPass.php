@@ -44,7 +44,7 @@ final class RedisAdapterPass implements CompilerPassInterface
                 $redis,
                 $message['queue'],
             ));
-            $senderDefinition->addTag('messenger.sender', array('name' => null));
+            $senderDefinition->addTag('messenger.sender');
 
             $sender = self::PREFIX.'.sender.'.$message['queue'];
             $container->setDefinition($sender, $senderDefinition);
@@ -64,7 +64,7 @@ final class RedisAdapterPass implements CompilerPassInterface
                 $message['ttl'],
                 $message['blockingTimeout'],
             ));
-            $receiverDefinition->addTag('messenger.receiver', array('name' => null));
+            $receiverDefinition->addTag('messenger.receiver');
 
             $receiver = self::PREFIX.'.receiver.'.$message['queue'];
             $container->setDefinition($receiver, $receiverDefinition);
