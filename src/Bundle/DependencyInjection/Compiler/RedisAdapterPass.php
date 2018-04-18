@@ -40,7 +40,7 @@ final class RedisAdapterPass implements CompilerPassInterface
 
         foreach ($messages as $class => $message) {
             $senderDefinition = new Definition(Sender::class, array(
-                new Reference('messenger.transport.default_encoder'),
+                new Reference('messenger.transport.encoder'),
                 $redis,
                 $message['queue'],
             ));
@@ -58,7 +58,7 @@ final class RedisAdapterPass implements CompilerPassInterface
         $receivers = array();
         foreach ($messages as $message) {
             $receiverDefinition = new Definition(Receiver::class, array(
-                new Reference('messenger.transport.default_decoder'),
+                new Reference('messenger.transport.decoder'),
                 $redis,
                 $message['queue'],
                 $message['ttl'],
