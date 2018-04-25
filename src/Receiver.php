@@ -45,6 +45,7 @@ class Receiver implements ReceiverInterface
                 $this->connection->reject($this->queue, $message);
             } catch (\Throwable $e) {
                 $this->connection->reject($this->queue, $message);
+                throw $e;
             } finally {
                 if (function_exists('pcntl_signal_dispatch')) {
                     pcntl_signal_dispatch();
