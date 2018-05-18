@@ -18,7 +18,7 @@ use Soyuka\RedisMessengerAdapter\Sender;
 use Soyuka\RedisMessengerAdapter\Receiver;
 use Symfony\Component\Messenger\Worker;
 use Symfony\Component\Messenger\Middleware\HandleMessageMiddleware;
-use Symfony\Component\Messenger\HandlerLocator;
+use Symfony\Component\Messenger\Handler\Locator\HandlerLocator;
 use Soyuka\RedisMessengerAdapter\RejectMessageException;
 
 // Build a serializer

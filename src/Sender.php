@@ -2,6 +2,7 @@
 
 namespace Soyuka\RedisMessengerAdapter;
 
+use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\EncoderInterface;
 use Symfony\Component\Messenger\Transport\SenderInterface;
 
@@ -21,8 +22,8 @@ class Sender implements SenderInterface
     /**
      * {@inheritdoc}
      */
-    public function send($message)
+    public function send(Envelope $envelope)
     {
-        $this->connection->add($this->queue, $this->encoder->encode($message));
+        $this->connection->add($this->queue, $this->encoder->encode($envelope));
     }
 }
