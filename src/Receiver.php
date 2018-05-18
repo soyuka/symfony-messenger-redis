@@ -2,7 +2,6 @@
 
 namespace Soyuka\RedisMessengerAdapter;
 
-use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\DecoderInterface;
 use Symfony\Component\Messenger\Transport\ReceiverInterface;
 
