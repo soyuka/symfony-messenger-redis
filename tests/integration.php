@@ -65,7 +65,7 @@ $handler = function ($t) use ($data, $failure, &$numFailure, &$numAck) {
 
 $bus = new MessageBus(array(
     new SendMessageMiddleware(new SenderLocator($container, array(
-        Message::class => array($senderId),
+        Message::class => $senderId,
     ))),
     new HandleMessageMiddleware(new HandlerLocator(array(
         Message::class => $handler,
