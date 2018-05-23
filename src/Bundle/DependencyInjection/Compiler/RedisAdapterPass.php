@@ -49,7 +49,7 @@ final class RedisAdapterPass implements CompilerPassInterface
             $sender = self::PREFIX.'.sender.'.$message['queue'];
             $container->setDefinition($sender, $senderDefinition);
             $senderLocatorMapping[$sender] = new Reference($sender);
-            $messageToSenderIdsMapping[$class] = array($sender);
+            $messageToSenderIdsMapping[$class] = $sender;
         }
 
         $container->getDefinition('messenger.sender_locator')->replaceArgument(0, $senderLocatorMapping);
