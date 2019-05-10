@@ -3,6 +3,8 @@ Redis adapter for symfony/messenger
 
 [![Build Status](https://travis-ci.org/soyuka/symfony-messenger-redis.svg?branch=master)](https://travis-ci.org/soyuka/symfony-messenger-redis)
 
+**Hello! This bundle is deprecated as symfony has now a [Redis transport]( https://github.com/symfony/symfony/commit/09e5cc1096c0d77119984fe6c7b12cc0b3aab0b8). It's available since symfony `4.3.0-BETA1`**
+
 This is an experimental Receiver/Sender on Redis for the symfony/messenger component.
 
 ## Quick start
